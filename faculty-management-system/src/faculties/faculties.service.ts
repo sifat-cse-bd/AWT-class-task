@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { Faculties } from './entities/faculties.entity.js';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { Faculties } from './entities/faculties.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateFacultyDto } from './dto/create-faculty.dto.js';
+import { QueryFailedError, Repository } from 'typeorm';
+import { CreateFacultyDto } from './dto/create-faculty.dto';
 
 @Injectable()
 export class FacultiesService {
@@ -11,13 +11,30 @@ export class FacultiesService {
         private facultyRepo: Repository<Faculties>,
     ) { }
 
-    //create a product
     async create(dto: CreateFacultyDto) {
-        const faculty = this.facultyRepo.create(dto);
-        const savedFaculty = await this.facultyRepo.save(faculty);
-        return {
-            message: 'Faculty created successfully',
-            data: savedFaculty,
-        };
+        try {
+            const existingFaculty = await this.facultyRepo.findOne({
+                where: { id: dto.id },
+            });
+
+            if (existingFaculty) {
+                throw new ConflictException('A faculty with this ID already exists');
+            }
+
+            const faculty = this.facultyRepo.create(dto);
+            await this.facultyRepo.save(faculty);
+
+            return {
+                message: 'Faculty created successfully',
+                data: faculty,
+            };
+
+        } catch (error) {
+            if (error instanceof ConflictException) {
+                throw error;
+            }
+
+            throw error;
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 
@@ -8,7 +8,7 @@ export class CreateFacultyDto {
     @Matches(/^\d{5}-\d{4}-\d{3}$/, {
         message: 'Id must be in the format XXXXX-XXXX-XXX (e.g., 23898-2880-203)',
     })
-    Id: string;
+    id: string;
 
     @IsString({ message: 'name must be a string' })
     @IsNotEmpty({ message: 'name should not be empty' })

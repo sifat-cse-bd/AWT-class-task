@@ -1,14 +1,14 @@
-import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Faculties{
-    @PrimaryColumn()
-    id: number;
+    @PrimaryColumn({ type: "varchar", length: 15 })
+    id: string;
 
-    @Column()
+    @Column({type: "varchar"})
     name: string;
 
-    @Column()
+    @Column({type: "varchar"})
     expertise: string;
 
     @Column()
